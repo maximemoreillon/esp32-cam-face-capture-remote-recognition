@@ -31,7 +31,9 @@ void camera_init(){
   // Frame parameters
   config.frame_size = FRAMESIZE_UXGA;
   
-  config.jpeg_quality = 4;
+  config.jpeg_quality = 4; // Lower means higher quality
+
+  // need multiple frame buffers in order to serve multiple clients
   config.fb_count = 2;
 
   // camera init
@@ -44,8 +46,8 @@ void camera_init(){
 
   //drop down frame size for higher initial frame rate
   sensor_t * s = esp_camera_sensor_get();
-  s->set_framesize(s, FRAMESIZE_QVGA);
+//  s->set_framesize(s, FRAMESIZE_QVGA);
+  s->set_framesize(s, FRAMESIZE_VGA);
 
-  
   Serial.println("[CAMERA] init OK");
 }

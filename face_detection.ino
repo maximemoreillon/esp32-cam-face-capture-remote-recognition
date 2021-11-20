@@ -1,4 +1,4 @@
-void face_Detection_init(){
+void face_detection_init(){
   
   mtmn_config.min_face = 80;
   mtmn_config.pyramid = 0.7;

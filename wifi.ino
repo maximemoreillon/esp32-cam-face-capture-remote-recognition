@@ -1,31 +1,26 @@
-void wifi_setup() {
-  // Settings
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(WIFI_SSID,WIFI_PASSWORD);
-  Serial.println(F("[WIFI] Connecting..."));
+boolean wifi_connected(){
+  return WiFi.status() == WL_CONNECTED;
 }
 
-void wifi_connection_manager(){
+static void wifi_setup(){
 
-  static int wifi_connected = -1; // 1: connected, 0: disconnected, -1: unknown
+  Serial.print("[Wifi] Wifi connecting to ");
+  Serial.println(WIFI_SSID);    
   
-  if(WiFi.status() != WL_CONNECTED) {
-    if(wifi_connected != 0){
-      // Wifi connection status changed to "disconnected"
-      wifi_connected = 0;
-      Serial.println(F("[WiFi] Disconnected"));
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(WIFI_SSID,WIFI_PASSWORD);
 
-      display_disconnected();
-    }
-  } else {
-    if(wifi_connected != 1){
-      // Wifi connection status changed to "connected"
-      wifi_connected = 1;
-      Serial.print(F("[WiFi] Connected, IP: "));
-      Serial.println(WiFi.localIP());
+  WiFi.onEvent([](WiFiEvent_t event, WiFiEventInfo_t info) {
+    Serial.print("[Wifi] Connected. IP: ");
+    Serial.println(IPAddress(info.got_ip.ip_info.ip.addr));      
+    display_wifi_connected();
+  },
+      WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP);
 
-      display_ip();
-    }
-  }
-  
+  WiFi.onEvent([](WiFiEvent_t event, WiFiEventInfo_t info) {
+    Serial.print("[Wifi] Connection lost: ");
+    Serial.println(info.disconnected.reason);
+    display_wifi_disconnected();  
+  },
+    WiFiEvent_t::SYSTEM_EVENT_STA_DISCONNECTED);
 }
