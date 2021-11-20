@@ -1,4 +1,5 @@
 boolean wifi_connected(){
+  // needed?
   return WiFi.status() == WL_CONNECTED;
 }
 
@@ -7,6 +8,8 @@ static void wifi_setup(){
   Serial.print("[Wifi] Wifi connecting to ");
   Serial.println(WIFI_SSID);    
   
+  WiFi.hostname(get_device_name());
+  WiFi.persistent(false);
   WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID,WIFI_PASSWORD);
 
